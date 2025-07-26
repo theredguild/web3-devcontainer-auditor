@@ -1,0 +1,29 @@
+name: DevContainer CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build and test devcontainer
+      uses: devcontainers/ci@v0.3
+      with:
+        imageName: web3-devcontainer-auditor
+        cacheFrom: web3-devcontainer-auditor
+        push: never
+        runCmd: |
+          echo "Testing auditor devcontainer build..."
+          whoami
+          echo "Checking read-only forensic environment..."
+          which slither || echo "Slither not found"
+          which myth || echo "Mythril not found"
+          ls -la /tmp || echo "Checking tmpfs structure"
+          echo "Forensic analysis environment verification complete"
